@@ -8,7 +8,7 @@ export class ClearCommand extends Command {
         super(Commands.Clear);
     }
 
-    execute(key: string) {
-        return this.documentManager.clear(key);
+    execute() {
+        return this.documentManager.clear();
     }
 }

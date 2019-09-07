@@ -50,7 +50,7 @@ let lastBranch = "";
 let lastHeadPath = "";
 
 function updateTabs(documentManager: DocumentManager, headPath: string): void {
-    fs.readFile(headPath, "utf-8", (err, data) => {
+    fs.readFile(headPath, "utf-8", async (err, data) => {
         if (!err) {
             const line = data.split(/\r\n|\r|\n/)[0];
 			const branch = line.split("/").pop();
@@ -65,16 +65,14 @@ function updateTabs(documentManager: DocumentManager, headPath: string): void {
 				console.log("Saving tabs for branch:", lastHeadPath + "-" + lastBranch);
 				// stuff
 
-				documentManager.save(lastHeadPath + "-" + lastBranch)
-					.then(function () {
-						console.log("Loading tabs for branch:", headPath + "-" + branch);
-						documentManager.open(headPath + "-" + branch, true)
-					})
+				await documentManager.save(lastHeadPath + "-" + lastBranch)
 				// vscode.commands.executeCommand('restoreEditors.save', lastHeadPath + "-" + lastBranch)
 
 
 
 
+				console.log("Loading tabs for branch:", headPath + "-" + branch);
+				await documentManager.open(headPath + "-" + branch, true)
 
 				// documentManager.open(headPath + "-" + branch, true)
 				// vscode.commands.executeCommand('restoreEditors.restore', headPath + "-" + branch)

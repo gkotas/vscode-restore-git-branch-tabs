@@ -16,8 +16,9 @@ export class DocumentManager extends Disposable {
 
     dispose() { }
 
-    clear(key: string) {
-        this.context.workspaceState.update(key, undefined);
+    clear() {
+        this.context.workspaceState.update('/home/jerry/Github/test/.git/HEAD-MyBranch', undefined);
+        this.context.workspaceState.update('/home/jerry/Github/test/.git/HEAD-master', undefined);
     }
 
     get(key: string): SavedEditor[] {
@@ -78,7 +79,7 @@ export class DocumentManager extends Disposable {
                     } as ISavedEditor;
                 });
 
-            console.log("Saved files:", openEditors);
+            console.log("Saved files:", editors);
 
             this.context.workspaceState.update(key, editors);
         }
