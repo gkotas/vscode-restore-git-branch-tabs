@@ -29,12 +29,13 @@ export class DocumentManager extends Disposable {
     async open(key: string, restore: boolean = false) {
         try {
             const editors = this.get(key);
-            if (!editors.length) return;
 
             if (restore) {
                 // Close all opened documents
                 await commands.executeCommand('workbench.action.closeAllEditors');
             }
+
+            if (!editors.length) return;
 
             console.log("Opening editors:", editors);
 
@@ -66,7 +67,7 @@ export class DocumentManager extends Disposable {
 
                 editor = await editorTracker.awaitNext(500);
                 if (editor !== undefined && openEditors.some(_ => TextEditorComparer.equals(_, editor, { useId: true, usePosition: true }))) break;
-            } while ((active === undefined && editor === undefined) || !TextEditorComparer.equals(active, editor, { useId: true, usePosition: true }));
+            } while ( !TextEditorComparer.equals(active, editor, { useId: true, usePosition: true }));
 
             editorTracker.dispose();
 
