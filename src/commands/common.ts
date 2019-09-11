@@ -37,20 +37,3 @@ export abstract class Command extends Disposable {
 
     abstract execute(...args: any[]): any;
 }
-
-export async function openEditor(uri: Uri, options?: TextDocumentShowOptions): Promise<TextEditor | undefined> {
-    try {
-        const defaults: TextDocumentShowOptions = {
-            preserveFocus: false,
-            preview: true,
-            viewColumn: (window.activeTextEditor && window.activeTextEditor.viewColumn) || 1
-        };
-
-        const document = await workspace.openTextDocument(uri);
-        return window.showTextDocument(document, { ...defaults, ...(options || {}) });
-    }
-    catch (ex) {
-        Logger.error(ex, 'openEditor');
-        return undefined;
-    }
-}

@@ -75,7 +75,7 @@ export class DocumentManager extends Disposable {
                 .filter(_ => _.document !== undefined)
                 .map(_ => {
                     return {
-                        uri: _.document.uri.fsPath,
+                        uri: _.document.uri,
                         viewColumn: _.viewColumn
                     } as ISavedEditor;
                 });

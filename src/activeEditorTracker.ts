@@ -1,4 +1,3 @@
-
 'use strict';
 import { commands, Disposable, TextEditor, window } from 'vscode';
 import { BuiltInCommands } from './constants';

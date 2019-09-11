@@ -1,37 +1,20 @@
 'use strict';
-import { TextDocumentShowOptions, Uri, ViewColumn } from 'vscode';
-import { openEditor } from './commands';
+import { TextDocumentShowOptions, TextEditor, Uri, ViewColumn, window, workspace } from 'vscode';
+import { Logger } from './logger';
 
 export interface ISavedEditor {
-    uri: string;
+    uri: Uri;
     viewColumn: ViewColumn;
 }
 
 export class SavedEditor {
 
-    uri: string;
-    viewColumn: ViewColumn | undefined;
+    uri: Uri;
+    viewColumn: ViewColumn;
 
-    constructor(savedEditor: ISavedEditor);
-    constructor(uri: string, viewColumn: ViewColumn);
-    constructor(savedEditorOrUri: ISavedEditor | string, viewColumn?: ViewColumn) {
-        if (typeof savedEditorOrUri === 'string') {
-            this.uri = Uri.parse(savedEditorOrUri).fsPath;
-            this.viewColumn = viewColumn;
-        }
-        else {
-            if (typeof savedEditorOrUri.uri === 'string') {
-                this.uri = Uri.parse(savedEditorOrUri.uri).fsPath;
-            }
-            // else if (savedEditorOrUri.uri instanceof Uri) {
-            //     this.uri = savedEditorOrUri.uri.fsPath;
-            // }
-            else {
-                // this.uri = new Uri().with(savedEditorOrUri.uri);
-                this.uri = Uri.file(savedEditorOrUri.uri).fsPath;
-            }
-            this.viewColumn = savedEditorOrUri.viewColumn;
-        }
+    constructor(savedEditor: ISavedEditor) {
+        this.uri = savedEditor.uri;
+        this.viewColumn = savedEditor.viewColumn;
     }
 
     async open(options?: TextDocumentShowOptions) {
@@ -41,6 +24,23 @@ export class SavedEditor {
             preview: true
         };
 
-        openEditor(Uri.file(this.uri), { ...defaults, ...(options || {}) });
+        openEditor(this.uri, { ...defaults, ...(options || {}) });
+    }
+}
+
+export async function openEditor(uri: Uri, options?: TextDocumentShowOptions): Promise<TextEditor | undefined> {
+    try {
+        const defaults: TextDocumentShowOptions = {
+            preserveFocus: false,
+            preview: true,
+            viewColumn: (window.activeTextEditor && window.activeTextEditor.viewColumn) || 1
+        };
+
+        const document = await workspace.openTextDocument(uri);
+        return window.showTextDocument(document, { ...defaults, ...(options || {}) });
+    }
+    catch (ex) {
+        Logger.error(ex, 'openEditor');
+        return undefined;
     }
 }
