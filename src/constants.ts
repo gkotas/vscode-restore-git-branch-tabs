@@ -1,19 +1,16 @@
 'use strict';
 
-export const ExtensionId = 'restore-editors';
-export const ExtensionKey = 'restoreEditors';
-export const ExtensionOutputChannelName = 'RestoreEditors';
-export const QualifiedExtensionId = `eamodio.${ExtensionId}`;
+export const ExtensionKey = 'gitBranchTabs';
+export const ExtensionOutputChannelName = 'GitBranchTabs';
 
-export type BuiltInCommands = 'vscode.open' | 'setContext' | 'workbench.action.closeActiveEditor' | 'workbench.action.nextEditor';
+export type BuiltInCommands = 'workbench.action.closeActiveEditor' | 'workbench.action.nextEditor' | 'workbench.action.closeAllEditors';
 export const BuiltInCommands = {
     CloseActiveEditor: 'workbench.action.closeActiveEditor' as BuiltInCommands,
+    CloseAllEditors: 'workbench.action.closeAllEditors' as BuiltInCommands,
     NextEditor: 'workbench.action.nextEditor' as BuiltInCommands,
-    Open: 'vscode.open' as BuiltInCommands,
-    SetContext: 'setContext' as BuiltInCommands
 };
 
-export type WorkspaceState = 'restoreEditors:documents';
+export type WorkspaceState = 'gitBranchTabs:knownBranches';
 export const WorkspaceState = {
-    SavedDocuments: 'restoreEditors:documents' as WorkspaceState
+    KnownBranches: ExtensionKey + ':knownBranches' as WorkspaceState
 };

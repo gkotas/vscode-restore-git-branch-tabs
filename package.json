@@ -1,7 +1,7 @@
 {
     "name": "git-branch-tabs",
     "displayName": "Git Branch Tabs",
-    "description": "Remembers which tabs were opened for each git branch.",
+    "description": "Remembers and restores which tabs were opened for each git branch.",
     "version": "0.0.1",
     "engines": {
         "vscode": "^1.38.0"
@@ -9,19 +9,43 @@
     "categories": [
         "Other"
     ],
+    "keywords": [
+        "editors",
+        "restore",
+        "git",
+        "branch",
+        "restore",
+        "tabs"
+    ],
     "activationEvents": [
-        "onCommand:extension.git-branch-tabs",
         "workspaceContains:.git"
     ],
     "main": "./out/extension.js",
     "contributes": {
+        "configuration": {
+            "type": "object",
+            "title": "Git Branch Tabs configuration",
+            "properties": {
+                "gitBranchTabs.debug": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Specifies debug mode"
+                },
+                "gitBranchTabs.outputLevel": {
+                    "type": "string",
+                    "default": "silent",
+                    "enum": [
+                        "silent",
+                        "errors",
+                        "verbose"
+                    ],
+                    "description": "Specifies how much (if any) output will be sent to the RestoreEditors output channel"
+                }
+            }
+        },
         "commands": [
             {
-                "command": "extension.git-branch-tabs",
-                "title": "Git Branch Tabs"
-            },
-            {
-                "command": "restoreEditors.clear",
+                "command": "gitBranchTabs.clear",
                 "title": "Clear Saved Editors"
             }
         ]

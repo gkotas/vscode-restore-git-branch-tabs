@@ -17,27 +17,21 @@ export class SavedEditor {
         this.viewColumn = savedEditor.viewColumn;
     }
 
-    async open(options?: TextDocumentShowOptions) {
+    async open() {
         const defaults: TextDocumentShowOptions = {
             viewColumn: this.viewColumn,
             preserveFocus: true,
-            preview: true
+            preview: false
         };
 
-        openEditor(this.uri, { ...defaults, ...(options || {}) });
+        openEditor(this.uri, defaults);
     }
 }
 
-export async function openEditor(uri: Uri, options?: TextDocumentShowOptions): Promise<TextEditor | undefined> {
+async function openEditor(uri: Uri, options: TextDocumentShowOptions): Promise<TextEditor | undefined> {
     try {
-        const defaults: TextDocumentShowOptions = {
-            preserveFocus: false,
-            preview: true,
-            viewColumn: (window.activeTextEditor && window.activeTextEditor.viewColumn) || 1
-        };
-
         const document = await workspace.openTextDocument(uri);
-        return window.showTextDocument(document, { ...defaults, ...(options || {}) });
+        return window.showTextDocument(document, options);
     }
     catch (ex) {
         Logger.error(ex, 'openEditor');

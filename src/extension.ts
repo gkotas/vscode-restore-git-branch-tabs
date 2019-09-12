@@ -1,90 +1,60 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
-import * as vscode from 'vscode';
-import * as path from 'path';
-import * as fs from 'fs';
+'use strict';
+import { ExtensionContext, RelativePattern, workspace } from 'vscode';
+import { join } from 'path';
+import { readFile }  from 'fs';
 import { DocumentManager } from './documentManager';
 import { Logger } from './logger';
 import { ClearCommand } from './commands';
+import { ExtensionKey} from './constants';
 
-// this method is called when your extension is activated
-// your extension is activated the very first time the command is executed
-export function activate(context: vscode.ExtensionContext) {
-
-    // Use the console to output diagnostic information (console.log) and errors (console.error)
-    // This line of code will only be executed once when your extension is activated
-    console.log('Congratulations, your extension "git-branch-tabs" is now active!');
-
+export function activate(context: ExtensionContext) {
 	Logger.configure(context);
 
 	const documentManager = new DocumentManager(context);
 
-    const workspaceFolders = vscode.workspace.workspaceFolders;
+    const workspaceFolders = workspace.workspaceFolders;
 
     if (workspaceFolders)
     {
-        const gitPath = path.join(workspaceFolders[0].uri.fsPath, ".git");
-        const headPath = path.join(gitPath, "HEAD");
-        const pattern = new vscode.RelativePattern(workspaceFolders[0], ".git/HEAD");
-        const watcher = vscode.workspace.createFileSystemWatcher(pattern);
+        const gitPath = join(workspaceFolders[0].uri.fsPath, ".git");
+        const headPath = join(gitPath, "HEAD");
+        const pattern = new RelativePattern(workspaceFolders[0], ".git/HEAD");
+        const watcher = workspace.createFileSystemWatcher(pattern);
+
         // Detects branch changes by looking at path of HEAD
         watcher.onDidChange(e => {
-            console.log(".git/HEAD change detected");
             updateTabs(documentManager, headPath)
 		});
 
 		updateTabs(documentManager, headPath);
+
+        new ClearCommand(documentManager);
     }
-    else
-    {
-        console.log("No workspace");
 
-	}
-
-    new ClearCommand(documentManager);
 }
 
 let lastBranch = "";
 let lastHeadPath = "";
 
 function updateTabs(documentManager: DocumentManager, headPath: string): void {
-    fs.readFile(headPath, "utf-8", async (err, data) => {
+    readFile(headPath, "utf-8", async (err, data) => {
         if (!err) {
+            // Parse the HEAD file to get branch name
             const line = data.split(/\r\n|\r|\n/)[0];
-			const branch = line.split("/").pop();
-			if (!branch) {
-				console.log("Git branch undefined");
-				return;
-			}
-			console.log("Moved to branch " + branch);
+            const branch = line.split("/").pop();
+
+            if (!branch) return;
 
 			// Branch change occured, save tabs then load new ones
 			if (lastBranch != "") {
-				console.log("Saving tabs for branch:", lastHeadPath + "-" + lastBranch);
-				// stuff
-
-				await documentManager.save(lastHeadPath + "-" + lastBranch)
-				// vscode.commands.executeCommand('restoreEditors.save', lastHeadPath + "-" + lastBranch)
-
-
-
-
-				console.log("Loading tabs for branch:", headPath + "-" + branch);
-				await documentManager.open(headPath + "-" + branch, true)
-
-				// documentManager.open(headPath + "-" + branch, true)
-				// vscode.commands.executeCommand('restoreEditors.restore', headPath + "-" + branch)
-
-			}
-
-
-
+                await documentManager.save(ExtensionKey + ":" + lastHeadPath + "-" + lastBranch)
+				await documentManager.open(ExtensionKey + ":" + headPath + "-" + branch)
+            }
 
 			lastBranch = branch;
 			lastHeadPath = headPath;
         } else {
-            console.log("Error getting git branch");
-            console.log(err);
+            Logger.error(err, 'Extension:updateTabs');
         }
     });
 }

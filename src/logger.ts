@@ -12,7 +12,7 @@ export const OutputLevel = {
     Verbose: 'verbose' as OutputLevel
 };
 
-let debug = true;
+let debug = false;
 let level: OutputLevel = OutputLevel.Silent;
 let output: OutputChannel;
 
