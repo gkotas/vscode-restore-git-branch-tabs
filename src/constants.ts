@@ -12,5 +12,5 @@ export const BuiltInCommands = {
 
 export type WorkspaceState = 'gitBranchTabs:knownBranches';
 export const WorkspaceState = {
-    KnownBranches: ExtensionKey + ':knownBranches' as WorkspaceState
+    KnownBranches: 'gitBranchTabs:knownBranches' as WorkspaceState
 };
