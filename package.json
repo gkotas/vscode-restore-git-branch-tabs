@@ -23,7 +23,7 @@
         "restore",
         "tabs"
     ],
-    "icon": "images/icon.svg",
+    "icon": "images/icon.png",
     "homepage": "https://github.com/gkotas/vscode-restore-git-branches/blob/master/README.md",
     "bugs": {
         "url": "https://github.com/gkotas/vscode-restore-git-branches/issues"
