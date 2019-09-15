@@ -3,9 +3,15 @@
     "displayName": "Restore Git Branch Tabs",
     "description": "Remembers and restores which tabs were opened for each git branch.",
     "version": "0.0.1",
+    "publisher": "gkotas",
+    "author": {
+        "name": "Gerald Kotas",
+        "email": "kotas3952@gmail.com"
+    },
     "engines": {
         "vscode": "^1.38.0"
     },
+    "license": "SEE LICENSE IN LICENSE",
     "categories": [
         "Other"
     ],
@@ -17,6 +23,15 @@
         "restore",
         "tabs"
     ],
+    "icon": "images/icon.svg",
+    "homepage": "https://github.com/gkotas/vscode-restore-git-branches/blob/master/README.md",
+    "bugs": {
+        "url": "https://github.com/gkotas/vscode-restore-git-branches/issues"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/gkotas/vscode-restore-git-branches.git"
+    },
     "activationEvents": [
         "workspaceContains:.git"
     ],
