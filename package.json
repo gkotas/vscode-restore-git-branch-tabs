@@ -24,13 +24,13 @@
         "tabs"
     ],
     "icon": "images/icon.png",
-    "homepage": "https://github.com/gkotas/vscode-restore-git-branches/blob/master/README.md",
+    "homepage": "https://github.com/gkotas/vscode-restore-git-branch-tabs/blob/master/README.md",
     "bugs": {
-        "url": "https://github.com/gkotas/vscode-restore-git-branches/issues"
+        "url": "https://github.com/gkotas/vscode-restore-git-branch-tabs/issues"
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/gkotas/vscode-restore-git-branches.git"
+        "url": "https://github.com/gkotas/vscode-restore-git-branch-tabs.git"
     },
     "activationEvents": [
         "workspaceContains:.git"
