@@ -1,4 +1,4 @@
-# Git Branch Tabs
+# Restore Git Branch Tabs
 
 Restore opened tabs on a per git branch basis.
 
@@ -10,11 +10,11 @@ This extension was heavily based off of the work done by [Eric Amodio](https://g
 
 - Automatically saves editors when a git repository is detected in the workspace.
 
-- `Clear Saved Editors` command (`gitBranchTabs:clear`) to clear all saved editors for every known branch.
+- `Clear Saved Editors` command (`restoreGitBranchTabs:clear`) to clear all saved editors for every known branch.
 
 ## Extension Settings
 
 | Name | Description
 | ---- | -----------
-|`gitBranchTabs.debug` | Enable debug mode
-|`gitBranchTabs.outputLevel` | Specifies the verbosity of the output channel
+|`restoreGitBranchTabs.debug` | Enable debug mode
+|`restoreGitBranchTabs.outputLevel` | Specifies the verbosity of the output channel
