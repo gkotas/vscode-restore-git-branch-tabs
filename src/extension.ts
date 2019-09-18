@@ -1,11 +1,11 @@
 'use strict';
 import { ExtensionContext, RelativePattern, workspace } from 'vscode';
 import { join } from 'path';
-import { readFile }  from 'fs';
+import { getGitBranch } from './branch';
 import { DocumentManager } from './documentManager';
 import { Logger } from './logger';
-import { ClearCommand } from './commands';
-import { ExtensionKey} from './constants';
+import { ClearCommand, LoadCommand, SaveCommand } from './commands';
+import { ExtensionKey } from './constants';
 
 export function activate(context: ExtensionContext) {
 	Logger.configure(context);
@@ -29,6 +29,8 @@ export function activate(context: ExtensionContext) {
 		updateTabs(documentManager, headPath);
 
         new ClearCommand(documentManager);
+        new LoadCommand(documentManager, headPath);
+        new SaveCommand(documentManager, headPath);
     }
 
 }
@@ -36,26 +38,18 @@ export function activate(context: ExtensionContext) {
 let lastBranch = "";
 let lastHeadPath = "";
 
-function updateTabs(documentManager: DocumentManager, headPath: string): void {
-    readFile(headPath, "utf-8", async (err, data) => {
-        if (!err) {
-            // Parse the HEAD file to get branch name
-            const line = data.split(/\r\n|\r|\n/)[0];
-            const branch = line.split("/").pop();
+async function updateTabs(documentManager: DocumentManager, headPath: string) {
+    getGitBranch(headPath, async (branch) => {
+        if (!branch) return;
 
-            if (!branch) return;
-
-			// Branch change occured, save tabs then load new ones
-			if (lastBranch != "") {
-                await documentManager.save(ExtensionKey + ":" + lastHeadPath + "-" + lastBranch)
-				await documentManager.open(ExtensionKey + ":" + headPath + "-" + branch)
-            }
-
-			lastBranch = branch;
-			lastHeadPath = headPath;
-        } else {
-            Logger.error(err, 'Extension:updateTabs');
+        // Branch change occured, save tabs then load new ones
+        if (lastBranch != "") {
+            await documentManager.save(ExtensionKey + ":" + lastHeadPath + "-" + lastBranch)
+            await documentManager.open(ExtensionKey + ":" + headPath + "-" + branch)
         }
+
+        lastBranch = branch;
+        lastHeadPath = headPath;
     });
 }
 
