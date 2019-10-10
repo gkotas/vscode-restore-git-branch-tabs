@@ -26,9 +26,9 @@ export class DocumentManager extends Disposable {
     }
 
     get(key: string): SavedEditor[] {
-        const data = this.context.workspaceState.get<ISavedEditor[]>(key);
-        // Logger.log('DocumentManager.get: Got these ieditors')
-        return (data && data.map(_ => new SavedEditor(_))) || [];
+        const data = this.context.workspaceState.get<string[]>(key);
+        Logger.log('DocumentManager.get: Got these json objects', data);
+        return (data && data.map(_ => new SavedEditor(JSON.parse(_) as ISavedEditor))) || [];
     }
 
     async open(key: string) {
@@ -75,13 +75,13 @@ export class DocumentManager extends Disposable {
             const editors = openEditors
                 .filter(_ => _.document !== undefined)
                 .map(_ => {
-                    return {
-                        uri: _.document.uri,
+                    return JSON.stringify({
+                        fsPath: _.document.uri.fsPath,
                         viewColumn: _.viewColumn
-                    } as ISavedEditor;
+                    } as ISavedEditor);
                 });
 
-            Logger.log(`DocumentManager.save: Saving these editors ${editors}`);
+            Logger.log(`DocumentManager.save: Saving these editors JSONs ${editors}`);
 
             this.context.workspaceState.update(key, editors);
 

@@ -3,24 +3,22 @@ import { TextDocumentShowOptions, TextEditor, Uri, ViewColumn, window, workspace
 import { Logger } from './logger';
 
 export interface ISavedEditor {
-    uri: Uri;
+    fsPath: string;
     viewColumn: ViewColumn;
-
-    toString: () => string;
 }
 
 export class SavedEditor {
 
-    uri: Uri;
+    fsPath: string;
     viewColumn: ViewColumn;
 
     constructor(savedEditor: ISavedEditor) {
-        this.uri = savedEditor.uri;
+        this.fsPath = savedEditor.fsPath;
         this.viewColumn = savedEditor.viewColumn;
     }
 
     toString = () : string => {
-        return `SavedEditor (${this.uri.fsPath})`;
+        return `SavedEditor{fsPath:${this.fsPath};viewColumn:${this.viewColumn}}`;
     }
 
     async open() {
@@ -30,15 +28,15 @@ export class SavedEditor {
             preview: false
         };
 
-        Logger.log(`SavedEditor.open: Opening this SavedEditor <${this}> which has this uri <${this.uri.toJSON()}> and fspath <${this.uri.fsPath}>`);
+        Logger.log(`SavedEditor.open: Opening this <${this}>`);
 
-        openEditor(this.uri, defaults);
+        openEditor(this.fsPath, defaults);
     }
 }
 
-async function openEditor(uri: Uri, options: TextDocumentShowOptions): Promise<TextEditor | undefined> {
+async function openEditor(fsPath: string, options: TextDocumentShowOptions): Promise<TextEditor | undefined> {
     try {
-        const document = await workspace.openTextDocument(uri);
+        const document = await workspace.openTextDocument(fsPath);
         return window.showTextDocument(document, options);
     }
     catch (ex) {
