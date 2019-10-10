@@ -16,7 +16,7 @@ export class DocumentManager extends Disposable {
 
     clear() {
         let knownBranches = this.context.workspaceState.get<string[]>(WorkspaceState.KnownBranches, []);
-        Logger.log('Deleting the known branches:', knownBranches);
+        Logger.log('DocumentManager.clear: Deleting the known branches', knownBranches);
 
         knownBranches.forEach((branch) => {
             this.context.workspaceState.update(branch, undefined);
@@ -27,12 +27,14 @@ export class DocumentManager extends Disposable {
 
     get(key: string): SavedEditor[] {
         const data = this.context.workspaceState.get<ISavedEditor[]>(key);
+        // Logger.log('DocumentManager.get: Got these ieditors')
         return (data && data.map(_ => new SavedEditor(_))) || [];
     }
 
     async open(key: string) {
         try {
             const editors = this.get(key);
+            Logger.log(`DocumentManager.open: Branch <${key}> has these editors saved`, editors);
 
             await commands.executeCommand(BuiltInCommands.CloseAllEditors);
 
@@ -79,13 +81,17 @@ export class DocumentManager extends Disposable {
                     } as ISavedEditor;
                 });
 
+            Logger.log(`DocumentManager.save: Saving these editors ${editors}`);
+
             this.context.workspaceState.update(key, editors);
 
             let knownBranches: string[];
             knownBranches = this.context.workspaceState.get<string[]>(WorkspaceState.KnownBranches, []);
+            Logger.log('DocumentManager.save: List of known branches', knownBranches);
 
             if (knownBranches.indexOf(key) < 0) {
                 knownBranches.push(key);
+                Logger.log(`DocumentManager.save: This branch <${key}> not known, adding to list`);
                 this.context.workspaceState.update(WorkspaceState.KnownBranches, knownBranches);
             }
         }

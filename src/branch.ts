@@ -8,7 +8,7 @@ export function getGitBranch(headPath: string, callback: (branch: string | undef
             // Parse the HEAD file to get branch name
             const line = data.split(/\r\n|\r|\n/)[0];
             const branch = line.split("/").pop();
-            console.log("Got here1", branch);
+            Logger.log(`getGitBranch: Got branch <${branch}>`);
             callback(branch);
 
         } else {

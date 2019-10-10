@@ -5,6 +5,8 @@ import { Logger } from './logger';
 export interface ISavedEditor {
     uri: Uri;
     viewColumn: ViewColumn;
+
+    toString: () => string;
 }
 
 export class SavedEditor {
@@ -17,12 +19,18 @@ export class SavedEditor {
         this.viewColumn = savedEditor.viewColumn;
     }
 
+    toString = () : string => {
+        return `SavedEditor (${this.uri.fsPath})`;
+    }
+
     async open() {
         const defaults: TextDocumentShowOptions = {
             viewColumn: this.viewColumn,
             preserveFocus: true,
             preview: false
         };
+
+        Logger.log(`SavedEditor.open: Opening this SavedEditor <${this}> which has this uri <${this.uri.toJSON()}> and fspath <${this.uri.fsPath}>`);
 
         openEditor(this.uri, defaults);
     }
