@@ -24,3 +24,7 @@ This extension was heavily based off of the work done by [Eric Amodio](https://g
 | ---- | -----------
 |`restoreGitBranchTabs.debug` | Enable debug mode
 |`restoreGitBranchTabs.outputLevel` | Specifies the verbosity of the output channel
+
+## Known Issues
+
+- View Columns are not used correctly meaning order of tabs isn't preserved.
