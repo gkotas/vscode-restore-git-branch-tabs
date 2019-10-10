@@ -3,18 +3,22 @@ import { TextDocumentShowOptions, TextEditor, Uri, ViewColumn, window, workspace
 import { Logger } from './logger';
 
 export interface ISavedEditor {
-    uri: Uri;
+    fsPath: string;
     viewColumn: ViewColumn;
 }
 
 export class SavedEditor {
 
-    uri: Uri;
+    fsPath: string;
     viewColumn: ViewColumn;
 
     constructor(savedEditor: ISavedEditor) {
-        this.uri = savedEditor.uri;
+        this.fsPath = savedEditor.fsPath;
         this.viewColumn = savedEditor.viewColumn;
+    }
+
+    toString = () : string => {
+        return `SavedEditor{fsPath:${this.fsPath};viewColumn:${this.viewColumn}}`;
     }
 
     async open() {
@@ -24,13 +28,15 @@ export class SavedEditor {
             preview: false
         };
 
-        openEditor(this.uri, defaults);
+        Logger.log(`SavedEditor.open: Opening this <${this}>`);
+
+        openEditor(this.fsPath, defaults);
     }
 }
 
-async function openEditor(uri: Uri, options: TextDocumentShowOptions): Promise<TextEditor | undefined> {
+async function openEditor(fsPath: string, options: TextDocumentShowOptions): Promise<TextEditor | undefined> {
     try {
-        const document = await workspace.openTextDocument(uri);
+        const document = await workspace.openTextDocument(fsPath);
         return window.showTextDocument(document, options);
     }
     catch (ex) {
