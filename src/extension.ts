@@ -8,9 +8,9 @@ import { ClearCommand, LoadCommand, SaveCommand } from './commands';
 import { ExtensionKey } from './constants';
 
 export function activate(context: ExtensionContext) {
-	Logger.configure(context);
+    Logger.configure(context);
 
-	const documentManager = new DocumentManager(context);
+    const documentManager = new DocumentManager(context);
 
     const workspaceFolders = workspace.workspaceFolders;
 
@@ -24,9 +24,9 @@ export function activate(context: ExtensionContext) {
         // Detects branch changes by looking at path of HEAD
         watcher.onDidChange(e => {
             updateTabs(documentManager, headPath)
-		});
+        });
 
-		updateTabs(documentManager, headPath);
+        updateTabs(documentManager, headPath);
 
         new ClearCommand(documentManager);
         new LoadCommand(documentManager, headPath);
