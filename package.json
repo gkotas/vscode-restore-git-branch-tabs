@@ -41,6 +41,11 @@
             "type": "object",
             "title": "Restore Git Branch Tabs configuration",
             "properties": {
+                "restoreGitBranchTabs.newBranchPreserveTabs": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Preserve the current tabs when switching to a new branch instead of closing them."
+                },
                 "restoreGitBranchTabs.debug": {
                     "type": "boolean",
                     "default": false,

@@ -12,6 +12,8 @@ This extension was heavily based off of the work done by [Eric Amodio](https://g
 
 - Automatically saves editors when a git repository is detected in the workspace.
 
+- New Branch Preserve Tabs: Option to keep tabs open when switching to a new branch instead of closing them.
+
 - `Clear Saved Editors` command (`restoreGitBranchTabs:clear`) to clear all saved editors for every known branch.
 
 - `Load Saved Editors` command (`restoreGitBranchTabs:load`) to manually load saved editors for the current branch.
@@ -22,9 +24,15 @@ This extension was heavily based off of the work done by [Eric Amodio](https://g
 
 | Name | Description
 | ---- | -----------
+|`restoreGitBranchTabs.newBranchPreserveTabs` | Preserve the current tabs when switching to a new branch
 |`restoreGitBranchTabs.debug` | Enable debug mode
 |`restoreGitBranchTabs.outputLevel` | Specifies the verbosity of the output channel
 
 ## Known Issues
 
 - View Columns are not used correctly meaning order of tabs isn't preserved.
+- Extension doesn't activate if workspace is a subdirectory of a git repo (i.e. no .git in root of workspace)
+
+## Future Features
+
+- Command to open saved tabs for any branch

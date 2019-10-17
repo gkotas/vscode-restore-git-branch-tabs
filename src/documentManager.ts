@@ -1,8 +1,9 @@
 'use strict';
-import { commands, Disposable, ExtensionContext, TextEditor, window } from 'vscode';
+import { commands, Disposable, ExtensionContext, TextEditor, window, workspace } from 'vscode';
 import { ActiveEditorTracker } from './activeEditorTracker';
 import { TextEditorComparer } from './comparers';
-import { WorkspaceState, BuiltInCommands } from './constants';
+import { IConfig } from './configuration';
+import { ExtensionKey, WorkspaceState, BuiltInCommands } from './constants';
 import { Logger } from './logger';
 import { ISavedEditor, SavedEditor } from './savedEditor';
 
@@ -36,7 +37,16 @@ export class DocumentManager extends Disposable {
             const editors = this.get(key);
             Logger.log(`DocumentManager.open: Branch <${key}> has these editors saved`, editors);
 
-            await commands.executeCommand(BuiltInCommands.CloseAllEditors);
+            // Use config option to determine if to close tabs if new branch has none saved
+            let closeEditors = true;
+            const cfg = workspace.getConfiguration().get<IConfig>(ExtensionKey);
+            if (cfg != undefined && cfg.newBranchPreserveTabs && !editors.length) {
+                closeEditors = false;
+            }
+
+            if (closeEditors) {
+                await commands.executeCommand(BuiltInCommands.CloseAllEditors);
+            }
 
             if (!editors.length) return;
 
