@@ -2,7 +2,7 @@
     "name": "restore-git-branch-tabs",
     "displayName": "Restore Git Branch Tabs",
     "description": "Remembers and restores which tabs were opened for each git branch.",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "publisher": "gkotas",
     "author": {
         "name": "Gerald Kotas",
