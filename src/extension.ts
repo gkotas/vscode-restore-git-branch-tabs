@@ -1,6 +1,7 @@
 'use strict';
 import { ExtensionContext, RelativePattern, workspace } from 'vscode';
-import { join } from 'path';
+import { existsSync, watch }  from 'fs';
+import { join, normalize } from 'path';
 import { getGitBranch } from './branch';
 import { DocumentManager } from './documentManager';
 import { Logger } from './logger';
@@ -16,14 +17,29 @@ export function activate(context: ExtensionContext) {
 
     if (workspaceFolders)
     {
-        const gitPath = join(workspaceFolders[0].uri.fsPath, ".git");
+        let workspacePath = workspaceFolders[0].uri.fsPath;
+        let gitPath = "";
+        while(true) {
+            Logger.log("Workspace", workspacePath);
+            gitPath = join(workspacePath, ".git");
+            if (existsSync(gitPath)) {
+                break;
+            }
+            workspacePath = normalize(join(workspacePath, "../"));
+            if (workspacePath === '/') {
+                return;
+            }
+        }
+        Logger.log('Git path', gitPath, existsSync(gitPath))
+
         const headPath = join(gitPath, "HEAD");
-        const pattern = new RelativePattern(workspaceFolders[0], ".git/HEAD");
-        const watcher = workspace.createFileSystemWatcher(pattern);
 
         // Detects branch changes by looking at path of HEAD
-        watcher.onDidChange(e => {
-            updateTabs(documentManager, headPath)
+        watch(gitPath, (event, filename) => {
+            if (filename === 'HEAD') {
+                Logger.log(`${filename} file Changed`, event);
+                updateTabs(documentManager, headPath)
+            }
         });
 
         updateTabs(documentManager, headPath);
