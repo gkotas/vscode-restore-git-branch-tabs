@@ -46,6 +46,11 @@
                     "default": false,
                     "description": "Preserve the current tabs when switching to a new branch instead of closing them."
                 },
+                "restoreGitBranchTabs.gitFolderLocation": {
+                    "type": "string",
+                    "default": ".",
+                    "description": "Path to directory of .git folder. \".\" is root of workspace. Empty to disable."
+                },
                 "restoreGitBranchTabs.debug": {
                     "type": "boolean",
                     "default": false,

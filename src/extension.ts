@@ -3,6 +3,7 @@ import { ExtensionContext, RelativePattern, workspace } from 'vscode';
 import { existsSync, watch }  from 'fs';
 import { join, normalize } from 'path';
 import { getGitBranch } from './branch';
+import { IConfig, defaultIConfig } from './configuration';
 import { DocumentManager } from './documentManager';
 import { Logger } from './logger';
 import { ClearCommand, LoadCommand, SaveCommand } from './commands';
@@ -17,20 +18,37 @@ export function activate(context: ExtensionContext) {
 
     if (workspaceFolders)
     {
-        let workspacePath = workspaceFolders[0].uri.fsPath;
-        let gitPath = "";
-        while(true) {
-            Logger.log("Workspace", workspacePath);
-            gitPath = join(workspacePath, ".git");
-            if (existsSync(gitPath)) {
-                break;
-            }
-            workspacePath = normalize(join(workspacePath, "../"));
-            if (workspacePath === '/') {
-                return;
-            }
+        let cfg = workspace.getConfiguration().get<IConfig>(ExtensionKey);
+        if (cfg === undefined)
+        {
+            cfg = defaultIConfig;
         }
-        Logger.log('Git path', gitPath, existsSync(gitPath))
+        let gitPath = cfg.gitFolderLocation;
+
+        if (gitPath === '')
+        {
+            // Empty path means to disable extension.
+            Logger.log('Empty string passed in. Disabling extension');
+            return;
+        }
+        else if (gitPath === '.')
+        {
+            Logger.log('Passed in dot, using root. for git path');
+            gitPath = workspaceFolders[0].uri.fsPath;
+        }
+        else
+        {
+            Logger.log('Using passed in path: ', gitPath);
+        }
+
+        // Add .git to path
+        gitPath = join(gitPath, ".git");
+
+        if (!existsSync(gitPath))
+        {
+            Logger.log('Git path doesnt exist. Quitting');
+            return;
+        }
 
         const headPath = join(gitPath, "HEAD");
 
