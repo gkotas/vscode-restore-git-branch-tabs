@@ -1,7 +1,7 @@
 'use strict';
-import { ExtensionContext, RelativePattern, workspace } from 'vscode';
+import { ExtensionContext, workspace } from 'vscode';
 import { existsSync, watch }  from 'fs';
-import { join, normalize } from 'path';
+import { join } from 'path';
 import { getGitBranch } from './branch';
 import { IConfig, defaultIConfig } from './configuration';
 import { DocumentManager } from './documentManager';
@@ -56,11 +56,11 @@ export function activate(context: ExtensionContext) {
         watch(gitPath, (event, filename) => {
             if (filename === 'HEAD') {
                 Logger.log(`${filename} file Changed`, event);
-                updateTabs(documentManager, headPath)
+                updateTabs(documentManager, headPath, cfg ? cfg.delayUpdate : 0);
             }
         });
 
-        updateTabs(documentManager, headPath);
+        updateTabs(documentManager, headPath, 0);
 
         new ClearCommand(documentManager);
         new LoadCommand(documentManager, headPath);
@@ -71,19 +71,34 @@ export function activate(context: ExtensionContext) {
 
 let lastBranch = "";
 let lastHeadPath = "";
+let delayTimer: NodeJS.Timeout | null = null;
 
-async function updateTabs(documentManager: DocumentManager, headPath: string) {
+async function updateTabs(documentManager: DocumentManager, headPath: string, delay: number) {
     getGitBranch(headPath, async (branch) => {
         if (!branch) return;
 
-        // Branch change occured, save tabs then load new ones
-        if (lastBranch != "") {
-            await documentManager.save(ExtensionKey + ":" + lastHeadPath + "-" + lastBranch)
-            await documentManager.open(ExtensionKey + ":" + headPath + "-" + branch)
-        }
+        const update = async () => {
+            // Branch change occured, save tabs then load new ones
+            if (lastBranch != "") {
+                await documentManager.save(ExtensionKey + ":" + lastHeadPath + "-" + lastBranch)
+                await documentManager.open(ExtensionKey + ":" + headPath + "-" + branch)
+            }
 
-        lastBranch = branch;
-        lastHeadPath = headPath;
+            lastBranch = branch;
+            lastHeadPath = headPath;
+
+            delayTimer = null;
+        };
+
+        if (delay > 0) {
+            Logger.log(`Delaying update for ${delay}ms`);
+            if (delayTimer) {
+                clearTimeout(delayTimer);
+            }
+            delayTimer = setTimeout(update, delay);
+        } else {
+            await update();
+        }
     });
 }
 

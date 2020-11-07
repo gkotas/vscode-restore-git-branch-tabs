@@ -26,6 +26,7 @@ This extension was heavily based off of the work done by [Eric Amodio](https://g
 | ---- | -----------
 |`restoreGitBranchTabs.newBranchPreserveTabs` | Preserve the current tabs when switching to a new branch
 |`restoreGitBranchTabs.gitFolderLocation` | Path to directory of .git folder
+|`restoreGitBranchTabs.delayUpdate` | Preserve the current tabs when switching to a new branch
 |`restoreGitBranchTabs.debug` | Enable debug mode
 |`restoreGitBranchTabs.outputLevel` | Specifies the verbosity of the output channel
 

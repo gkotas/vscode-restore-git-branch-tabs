@@ -51,6 +51,11 @@
                     "default": ".",
                     "description": "Path to directory of .git folder. \".\" is root of workspace. Empty to disable."
                 },
+                "restoreGitBranchTabs.delayUpdate": {
+                    "type": "number",
+                    "default": 0,
+                    "description": "Delay to restore tabs after a git branch update. Useful to workaround git rebases."
+                },
                 "restoreGitBranchTabs.debug": {
                     "type": "boolean",
                     "default": false,
