@@ -7,7 +7,7 @@ export function getGitBranch(headPath: string, callback: (branch: string | undef
         if (!err) {
             // Parse the HEAD file to get branch name
             const line = data.split(/\r\n|\r|\n/)[0];
-            const branch = line.split("/").pop();
+            const branch = (line.split(' ').pop() || 'unknown').replace('refs/heads/', '');
             Logger.log(`getGitBranch: Got branch <${branch}>`);
             callback(branch);
 
